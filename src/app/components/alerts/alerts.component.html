@@ -77,25 +77,25 @@
 
     <!-- Alert Statistics -->
     <div class="stats-grid grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <div class="stat-card bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg">
-        <div class="text-sm opacity-90">Total Alerts</div>
-        <div class="text-2xl font-bold">{{ alertStats?.total || 0 }}</div>
-        <div class="text-xs opacity-75">All time</div>
+      <div class="stat-card bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-lg shadow-lg border border-blue-200">
+        <div class="text-sm font-medium text-blue-100">Total Alerts</div>
+        <div class="text-2xl font-bold text-white mt-1">{{ alertStats?.total || 0 }}</div>
+        <div class="text-xs text-blue-200 mt-1">All time</div>
       </div>
-      <div class="stat-card bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-lg">
-        <div class="text-sm opacity-90">Unread</div>
-        <div class="text-2xl font-bold">{{ alertStats?.unread || 0 }}</div>
-        <div class="text-xs opacity-75">Need attention</div>
+      <div class="stat-card bg-gradient-to-r from-red-600 to-red-700 text-white p-4 rounded-lg shadow-lg border border-red-200">
+        <div class="text-sm font-medium text-red-100">Unread</div>
+        <div class="text-2xl font-bold text-white mt-1">{{ alertStats?.unread || 0 }}</div>
+        <div class="text-xs text-red-200 mt-1">Need attention</div>
       </div>
-      <div class="stat-card bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 rounded-lg">
-        <div class="text-sm opacity-90">Today</div>
-        <div class="text-2xl font-bold">{{ alertStats?.todayCount || 0 }}</div>
-        <div class="text-xs opacity-75">Last 24h</div>
+      <div class="stat-card bg-gradient-to-r from-orange-600 to-orange-700 text-white p-4 rounded-lg shadow-lg border border-orange-200">
+        <div class="text-sm font-medium text-orange-100">Today</div>
+        <div class="text-2xl font-bold text-white mt-1">{{ alertStats?.todayCount || 0 }}</div>
+        <div class="text-xs text-orange-200 mt-1">Last 24h</div>
       </div>
-      <div class="stat-card bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg">
-        <div class="text-sm opacity-90">This Week</div>
-        <div class="text-2xl font-bold">{{ alertStats?.weekCount || 0 }}</div>
-        <div class="text-xs opacity-75">Last 7 days</div>
+      <div class="stat-card bg-gradient-to-r from-green-600 to-green-700 text-white p-4 rounded-lg shadow-lg border border-green-200">
+        <div class="text-sm font-medium text-green-100">This Week</div>
+        <div class="text-2xl font-bold text-white mt-1">{{ alertStats?.weekCount || 0 }}</div>
+        <div class="text-xs text-green-200 mt-1">Last 7 days</div>
       </div>
     </div>
 

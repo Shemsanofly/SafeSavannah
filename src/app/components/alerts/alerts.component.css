@@ -28,11 +28,46 @@
   padding: 16px;
   text-align: center;
   transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Enhanced statistics cards with better text visibility */
+.stat-card.bg-gradient-to-r {
+  background: linear-gradient(135deg, var(--tw-gradient-from), var(--tw-gradient-to));
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-card.bg-gradient-to-r::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stat-card.bg-gradient-to-r:hover::before {
+  opacity: 1;
+}
+
+.stat-card .text-white {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+}
+
+.stat-card .text-2xl {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  letter-spacing: -0.025em;
 }
 
 .stat-card.unread {
@@ -620,5 +655,45 @@
     right: 16px;
     left: 16px;
     width: auto;
+  }
+}
+
+/* Additional text visibility improvements for statistics cards */
+.stats-grid .stat-card {
+  /* Ensure text is always visible against gradient backgrounds */
+  color: #ffffff;
+}
+
+.stats-grid .stat-card .text-blue-100,
+.stats-grid .stat-card .text-red-100,
+.stats-grid .stat-card .text-orange-100,
+.stats-grid .stat-card .text-green-100 {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500;
+}
+
+.stats-grid .stat-card .text-blue-200,
+.stats-grid .stat-card .text-red-200,
+.stats-grid .stat-card .text-orange-200,
+.stats-grid .stat-card .text-green-200 {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-weight: 400;
+}
+
+.stats-grid .stat-card .text-white {
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+/* Accessibility and contrast improvements */
+.stats-grid .stat-card:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .stats-grid .stat-card {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   }
 }
