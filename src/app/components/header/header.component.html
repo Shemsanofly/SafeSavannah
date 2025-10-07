@@ -1,0 +1,184 @@
+<header class="navigation-header">
+  <!-- Main Navigation Bar -->
+  <nav class="main-nav">
+    <div class="nav-container">
+      <!-- Brand Section -->
+      <div class="brand-section">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">SafeSavannah</h1>
+            <span class="brand-subtitle">Wildlife Conservation Platform</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="nav-links">
+        <div class="nav-menu">
+          <button class="nav-item" [class.active]="currentView === 'dashboard'" (click)="setActiveView('dashboard')">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5v6m4-6v6m4-6v6"/>
+            </svg>
+            <span>Dashboard</span>
+          </button>
+          
+          <button class="nav-item" [class.active]="currentView === 'map'" (click)="setActiveView('map')">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+            </svg>
+            <span>Live Map</span>
+          </button>
+          
+          <button class="nav-item" [class.active]="currentView === 'alerts'" (click)="setActiveView('alerts')">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v1a1 1 0 01-1 1H7a1 1 0 01-1-1V3a1 1 0 011-1h1a1 1 0 011 1zM9 21v-1a1 1 0 01-1-1H7a1 1 0 01-1 1v1a1 1 0 011 1h1a1 1 0 011-1z"/>
+            </svg>
+            <span>Alerts</span>
+            <div class="alert-badge" *ngIf="alertStats.unread > 0">{{ alertStats.unread }}</div>
+          </button>
+          
+          <button class="nav-item" [class.active]="currentView === 'simulation'" (click)="setActiveView('simulation')">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>Training</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Status & Actions Section -->
+      <div class="status-section">
+        <!-- System Status -->
+        <div class="system-status">
+          <div class="status-indicator" [class.active]="isMonitoringActive">
+            <div class="status-dot"></div>
+            <span class="status-text">{{ isMonitoringActive ? 'Live' : 'Offline' }}</span>
+          </div>
+        </div>
+
+        <!-- Current Time -->
+        <div class="time-display">
+          <div class="time-main">{{ currentTime | date:'HH:mm' }}</div>
+          <div class="time-sub">{{ currentTime | date:'MMM dd' }}</div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <button class="action-btn" 
+                  [class.active]="isSimulationRunning"
+                  (click)="toggleSimulation()"
+                  [attr.title]="isSimulationRunning ? 'Stop Simulation' : 'Start Simulation'"
+                  [attr.aria-label]="isSimulationRunning ? 'Stop Simulation' : 'Start Simulation'">
+            <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" *ngIf="!isSimulationRunning">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" *ngIf="isSimulationRunning">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10l0 4 4-2-4-2z"/>
+            </svg>
+          </button>
+
+          <button class="action-btn notification-btn" 
+                  *ngIf="alertStats.unread > 0"
+                  (click)="markAllAlertsAsRead()"
+                  title="Mark all alerts as read">
+            <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"/>
+            </svg>
+            <div class="notification-count">{{ alertStats.unread }}</div>
+          </button>
+
+          <!-- User Menu -->
+          <div class="user-menu">
+            <button class="user-btn" 
+                    (click)="toggleUserMenu()"
+                    title="User Menu"
+                    aria-label="Open user menu">
+              <div class="user-avatar">
+                <svg class="user-icon" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+              <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            
+            <div class="user-dropdown" *ngIf="showUserMenu">
+              <div class="dropdown-header">
+                <div class="user-info">
+                  <div class="user-name">Conservation Team</div>
+                  <div class="user-role">Wildlife Monitor</div>
+                </div>
+              </div>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item">
+                <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Settings
+              </button>
+              <button class="dropdown-item">
+                <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Help & Support
+              </button>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item danger">
+                <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Stats Summary Bar -->
+  <div class="stats-bar">
+    <div class="stats-container">
+      <div class="stat-group">
+        <div class="stat-item">
+          <div class="stat-value">{{ alertStats.total }}</div>
+          <div class="stat-label">Total Alerts</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-value critical" *ngIf="alertStats.byPriority.critical > 0">{{ alertStats.byPriority.critical }}</div>
+          <div class="stat-value" *ngIf="alertStats.byPriority.critical === 0">0</div>
+          <div class="stat-label">Critical</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-value">{{ activeAnimals }}</div>
+          <div class="stat-label">Animals Tracked</div>
+        </div>
+      </div>
+      
+      <div class="stat-group">
+        <div class="system-info">
+          <div class="info-item">
+            <span class="info-label">Last Update:</span>
+            <span class="info-value">{{ lastUpdateTime | date:'HH:mm:ss' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Coverage:</span>
+            <span class="info-value">98.5%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

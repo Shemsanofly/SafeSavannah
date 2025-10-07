@@ -1,0 +1,190 @@
+<div class="simulation-container">
+  <div class="simulation-header">
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">Simulation Mode</h2>
+    <p class="text-gray-600">Training scenarios and testing environment for SafeSavannah system</p>
+  </div>
+
+  <!-- Simulation Status -->
+  <div class="status-section">
+    <div class="status-card" [class]="isSimulationRunning ? 'active' : 'inactive'">
+      <div class="status-indicator">
+        <div class="status-light" [class]="isSimulationRunning ? 'running' : 'stopped'"></div>
+        <span class="status-text">
+          {{ isSimulationRunning ? 'Simulation Running' : 'Simulation Stopped' }}
+        </span>
+      </div>
+      
+      <div *ngIf="isSimulationRunning && currentScenario" class="simulation-info">
+        <div class="scenario-name">{{ currentScenario.name }}</div>
+        <div class="elapsed-time">{{ getElapsedTimeFormatted() }}</div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getScenarioProgress()"></div>
+        </div>
+        <div class="progress-text">{{ getScenarioProgress().toFixed(1) }}% Complete</div>
+      </div>
+    </div>
+
+    <!-- Quick Controls -->
+    <div class="quick-controls">
+      <button 
+        *ngIf="!isSimulationRunning"
+        class="control-btn start-btn"
+        disabled>
+        ▶️ Start (Select Scenario)
+      </button>
+      <button 
+        *ngIf="isSimulationRunning"
+        (click)="stopSimulation()"
+        class="control-btn stop-btn">
+        ⏹️ Stop
+      </button>
+      <button 
+        *ngIf="isSimulationRunning"
+        (click)="pauseSimulation()"
+        class="control-btn pause-btn">
+        ⏸️ Pause
+      </button>
+      <button 
+        (click)="resetSimulation()"
+        class="control-btn reset-btn">
+        🔄 Reset
+      </button>
+    </div>
+  </div>
+
+  <!-- Scenarios Section -->
+  <div class="scenarios-section">
+    <h3 class="section-title">Training Scenarios</h3>
+    <div class="scenarios-grid">
+      <div *ngFor="let scenario of scenarios" 
+           class="scenario-card"
+           [class.active]="currentScenario?.id === scenario.id">
+        
+        <div class="scenario-header">
+          <h4 class="scenario-name">{{ scenario.name }}</h4>
+          <span class="scenario-duration">{{ scenario.duration }} min</span>
+        </div>
+        
+        <p class="scenario-description">{{ scenario.description }}</p>
+        
+        <div class="scenario-events">
+          <h5>Key Events ({{ scenario.events.length }}):</h5>
+          <ul class="events-list">
+            <li *ngFor="let event of scenario.events.slice(0, 3)" class="event-item">
+              <span class="event-time">{{ event.triggerTime }}m:</span>
+              <span class="event-desc">{{ event.description }}</span>
+            </li>
+            <li *ngIf="scenario.events.length > 3" class="event-item more">
+              ... and {{ scenario.events.length - 3 }} more events
+            </li>
+          </ul>
+        </div>
+        
+        <div class="scenario-actions">
+          <button 
+            *ngIf="!isSimulationRunning"
+            (click)="startScenario(scenario)"
+            class="btn-primary scenario-btn">
+            Start Scenario
+          </button>
+          <button 
+            *ngIf="isSimulationRunning && currentScenario?.id === scenario.id"
+            disabled
+            class="btn-secondary scenario-btn">
+            Currently Running
+          </button>
+          <button 
+            *ngIf="isSimulationRunning && currentScenario?.id !== scenario.id"
+            disabled
+            class="btn-secondary scenario-btn">
+            Simulation Active
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced Controls -->
+  <div class="advanced-controls">
+    <h3 class="section-title">Advanced Controls</h3>
+    
+    <div class="controls-grid">
+      <!-- Simulation Speed -->
+      <div class="control-group">
+        <label class="control-label">Simulation Speed:</label>
+        <select 
+          [(ngModel)]="simulationSpeed" 
+          (change)="changeSimulationSpeed(simulationSpeed)"
+          class="control-select"
+          title="Adjust simulation speed">
+          <option *ngFor="let option of speedOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Manual Controls -->
+      <div class="control-group">
+        <label class="control-label">Manual Testing:</label>
+        <div class="control-buttons">
+          <button 
+            (click)="addCustomAnimal()"
+            class="control-btn add-btn">
+            ➕ Add Animal
+          </button>
+          <button 
+            (click)="triggerManualAlert('poacher_detected')"
+            class="control-btn alert-btn">
+            🚨 Trigger Alert
+          </button>
+        </div>
+      </div>
+
+      <!-- Current Animals -->
+      <div class="control-group">
+        <label class="control-label">Active Animals: {{ animals.length }}</label>
+        <div class="animals-summary">
+          <div *ngFor="let animal of animals.slice(0, 5)" class="animal-chip">
+            <span class="animal-name">{{ animal.name }}</span>
+            <span class="animal-status" [class]="animal.health">{{ animal.health }}</span>
+          </div>
+          <div *ngIf="animals.length > 5" class="animal-chip more">
+            +{{ animals.length - 5 }} more
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Event Info -->
+  <div *ngIf="isSimulationRunning && getNextEvent()" class="next-event">
+    <h4 class="next-event-title">Next Event</h4>
+    <div class="next-event-content">
+      <span class="next-event-time">In {{ getNextEvent()!.triggerTime - (elapsedTime / 60) | number:'1.0-1' }} minutes:</span>
+      <span class="next-event-desc">{{ getNextEvent()!.description }}</span>
+    </div>
+  </div>
+
+  <!-- Simulation Tips -->
+  <div class="tips-section">
+    <h3 class="section-title">Simulation Tips</h3>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <h4>🎯 Training Mode</h4>
+        <p>Use scenarios to practice emergency response procedures and familiarize yourself with the system interface.</p>
+      </div>
+      <div class="tip-card">
+        <h4>⚡ Speed Control</h4>
+        <p>Increase simulation speed to quickly test long-term scenarios or slow it down for detailed observation.</p>
+      </div>
+      <div class="tip-card">
+        <h4>📊 Data Analysis</h4>
+        <p>Monitor the dashboard and alerts components during scenarios to understand system behavior patterns.</p>
+      </div>
+      <div class="tip-card">
+        <h4>🔧 Custom Testing</h4>
+        <p>Add custom animals and trigger manual alerts to test specific situations not covered by scenarios.</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<div class="app-container">
+  <!-- Professional Header with Navigation -->
+  <app-header (viewChanged)="setCurrentView($event)"></app-header>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="content-header">
+      <h1 class="content-title">{{ getCurrentViewTitle() }}</h1>
+    </div>
+
+    <!-- Conditional Content Rendering -->
+    <div class="content-body">
+      <app-dashboard *ngIf="currentView === 'dashboard'"></app-dashboard>
+      <app-map *ngIf="currentView === 'map'"></app-map>
+      <app-alerts *ngIf="currentView === 'alerts'"></app-alerts>
+      <app-simulation *ngIf="currentView === 'simulation'"></app-simulation>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>SafeSavannah</h4>
+        <p>Wildlife monitoring and anti-poaching dashboard</p>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>Emergency: +254-XXX-XXXX</p>
+        <p>Support: info&#64;safesavannah.org</p>
+      </div>
+      <div class="footer-section">
+        <h4>Status</h4>
+        <p>System operational</p>
+        <p>Last update: {{ 'now' | date:'short' }}</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 SafeSavannah. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
